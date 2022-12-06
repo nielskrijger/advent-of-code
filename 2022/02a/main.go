@@ -7,60 +7,16 @@ import (
 	"strings"
 )
 
-const (
-	Rock = iota + 1
-	Paper
-	Scissors
+var hand = map[string]int{"A": 0, "X": 0, "B": 1, "Y": 1, "C": 2, "Z": 2}
 
-	Win  = 6
-	Draw = 3
-	Loss = 0
-)
-
-type round struct {
-	opponent int
-	me       int
-}
-
-// calculateTotalScore returns the total score of a single round which
-// is the symbol score (Rock/Paper/Scissors) + outcome (Win/Draw/Loss)
-func (r round) calculateTotalScore() int {
-	return r.me + r.calculateWinScore()
-}
-
-func (r round) calculateWinScore() int {
-	if r.me == r.opponent {
-		return Draw
+func calculateWinScore(me int, opponent int) int {
+	if me == opponent {
+		return 3
 	}
-	if r.me == Rock && r.opponent == Paper {
-		return Loss
+	if opponent == (me+1)%3 {
+		return 0
 	}
-	if r.me == Paper && r.opponent == Scissors {
-		return Loss
-	}
-	if r.me == Scissors && r.opponent == Rock {
-		return Loss
-	}
-	return Win
-}
-
-func determineHand(symbol string) int {
-	switch symbol {
-	case "A":
-		fallthrough
-	case "X":
-		return Rock
-	case "B":
-		fallthrough
-	case "Y":
-		return Paper
-	case "C":
-		fallthrough
-	case "Z":
-		return Scissors
-	}
-
-	panic(fmt.Sprintf("Unknown hand symbol: %q", symbol))
+	return 6
 }
 
 func main() {
@@ -73,11 +29,7 @@ func main() {
 
 	for sc.Scan() {
 		split := strings.Split(sc.Text(), " ")
-		r := round{
-			opponent: determineHand(split[0]),
-			me:       determineHand(split[1]),
-		}
-		totalScore += r.calculateTotalScore()
+		totalScore += hand[split[1]] + 1 + calculateWinScore(hand[split[1]], hand[split[0]])
 	}
 
 	fmt.Printf("Answer: %d", totalScore)
