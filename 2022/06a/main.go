@@ -13,9 +13,7 @@ func main() {
 	for i := 0; i < len(input); i++ {
 		seen := make(map[byte]bool)
 
-		runes := input[i : i+uniqueChars]
-
-		for _, r := range runes {
+		for _, r := range input[i : i+uniqueChars] {
 			seen[r] = true
 		}
 
