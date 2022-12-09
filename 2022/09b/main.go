@@ -14,10 +14,10 @@ func main() {
 	rope := make([]image.Point, 10)
 	visited := map[image.Point]bool{}
 
-	change := map[uint8]image.Point{'U': {0, 1}, 'D': {0, -1}, 'R': {1, 0}, 'L': {-1, 0}}
+	change := map[rune]image.Point{'U': {0, 1}, 'D': {0, -1}, 'R': {1, 0}, 'L': {-1, 0}}
 
 	for _, line := range lines {
-		var direction uint8
+		var direction rune
 		var steps int
 		_, _ = fmt.Sscanf(line, "%c %d", &direction, &steps)
 
