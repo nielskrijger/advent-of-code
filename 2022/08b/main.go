@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	matrix := loadData("2022/08b/input.txt")
+	matrix := loadData("2022/08b/sample.txt")
 
 	highest := 0
 	for r := 1; r < len(matrix)-1; r++ {

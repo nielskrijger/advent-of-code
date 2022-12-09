@@ -20,7 +20,7 @@ func calculateWinScore(me int, opponent int) int {
 }
 
 func main() {
-	f, _ := os.Open("2022/02a/input.txt")
+	f, _ := os.Open("2022/02a/sample.txt")
 	defer f.Close()
 
 	sc := bufio.NewScanner(f)

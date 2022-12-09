@@ -8,7 +8,7 @@ import (
 const uniqueChars = 4
 
 func main() {
-	input, _ := os.ReadFile("2022/06b/input.txt")
+	input, _ := os.ReadFile("2022/06a/sample.txt")
 
 	for i := 0; i < len(input); i++ {
 		seen := make(map[byte]bool)

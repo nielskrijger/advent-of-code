@@ -12,7 +12,7 @@ const totalDiskSize = 70_000_000
 const requiredSpace = 30_000_000
 
 func main() {
-	data, _ := os.ReadFile("2022/07b/input.txt")
+	data, _ := os.ReadFile("2022/07b/sample.txt")
 	tree := createFileTree(strings.Split(string(data), "\n"))
 
 	// Find all directories that would free up enough space

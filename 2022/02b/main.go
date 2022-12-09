@@ -31,7 +31,7 @@ func determineMyHand(opponent int, outcome string) int {
 }
 
 func main() {
-	f, _ := os.Open("2022/02b/input.txt")
+	f, _ := os.Open("2022/02b/sample.txt")
 	defer f.Close()
 
 	sc := bufio.NewScanner(f)

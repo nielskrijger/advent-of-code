@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	f, _ := os.Open("2022/03b/input.txt")
+	f, _ := os.Open("2022/03b/sample.txt")
 	defer f.Close()
 
 	total := 0

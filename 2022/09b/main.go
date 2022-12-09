@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	data, _ := os.ReadFile("2022/09b/input.txt")
+	data, _ := os.ReadFile("2022/09b/sample.txt")
 	lines := strings.Split(string(data), "\n")
 
 	rope := make([]image.Point, 10)

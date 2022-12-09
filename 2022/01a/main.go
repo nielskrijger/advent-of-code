@@ -1,33 +1,27 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
+	"strings"
 )
 
 func main() {
-	f, _ := os.Open("2022/01a/input.txt")
-	defer f.Close()
+	data, _ := os.ReadFile("2022/01a/sample.txt")
+	groups := strings.Split(string(data), "\n\n")
 
-	sc := bufio.NewScanner(f)
+	bags := make([]int, len(groups))
 
-	maxCalories := 0
-	currentCalories := 0
-
-	for sc.Scan() {
-		calories, err := strconv.Atoi(sc.Text())
-		currentCalories += calories
-
-		if err != nil {
-			if currentCalories > maxCalories {
-				maxCalories = currentCalories
-			}
-
-			currentCalories = 0
+	for i, group := range groups {
+		for _, calories := range strings.Fields(group) {
+			cal, _ := strconv.Atoi(calories)
+			bags[i] += cal
 		}
 	}
 
-	fmt.Printf("Answer: %d", maxCalories)
+	sort.Sort(sort.Reverse(sort.IntSlice(bags)))
+
+	fmt.Printf("Answer: %d", bags[0])
 }

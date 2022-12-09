@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	data, _ := os.ReadFile("2022/09a/input.txt")
+	data, _ := os.ReadFile("2022/09a/sample.txt")
 	lines := strings.Split(string(data), "\n")
 
 	tail := image.Pt(0, 0)

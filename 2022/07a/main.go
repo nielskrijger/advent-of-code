@@ -10,7 +10,7 @@ import (
 var minFileSize = 100_000
 
 func main() {
-	data, _ := os.ReadFile("2022/07a/input.txt")
+	data, _ := os.ReadFile("2022/07a/sample.txt")
 	tree := createFileTree(strings.Split(string(data), "\n"))
 
 	fmt.Printf("Answer: %d", findCandidatesFileSize(tree))
