@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"sort"
@@ -13,7 +12,8 @@ const totalDiskSize = 70_000_000
 const requiredSpace = 30_000_000
 
 func main() {
-	tree := createFileTree(loadFile("2022/07b/input.txt"))
+	data, _ := os.ReadFile("2022/07b/input.txt")
+	tree := createFileTree(strings.Split(string(data), "\n"))
 
 	// Find all directories that would free up enough space
 	unusedSpace := totalDiskSize - tree.size
@@ -114,18 +114,4 @@ func createFileTree(lines []string) *file {
 	}
 
 	return root
-}
-
-func loadFile(filename string) []string {
-	f, _ := os.Open(filename)
-	defer f.Close()
-
-	sc := bufio.NewScanner(f)
-	lines := make([]string, 0)
-
-	for sc.Scan() {
-		lines = append(lines, sc.Text())
-	}
-
-	return lines
 }

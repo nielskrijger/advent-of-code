@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"strconv"
@@ -11,7 +10,8 @@ import (
 var minFileSize = 100_000
 
 func main() {
-	tree := createFileTree(loadFile("2022/07a/input.txt"))
+	data, _ := os.ReadFile("2022/07a/input.txt")
+	tree := createFileTree(strings.Split(string(data), "\n"))
 
 	fmt.Printf("Answer: %d", findCandidatesFileSize(tree))
 }
@@ -104,18 +104,4 @@ func createFileTree(lines []string) *file {
 	}
 
 	return root
-}
-
-func loadFile(filename string) []string {
-	f, _ := os.Open(filename)
-	defer f.Close()
-
-	sc := bufio.NewScanner(f)
-	lines := make([]string, 0)
-
-	for sc.Scan() {
-		lines = append(lines, sc.Text())
-	}
-
-	return lines
 }
