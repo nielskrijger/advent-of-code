@@ -17,27 +17,22 @@ func main() {
 }
 
 func bfs(start *node, end *node) int {
-	type nodeLevel struct {
-		node  *node
-		depth int
-	}
+	visited := make(map[*node]int)
+	visited[start] = 0
 
-	visited := make(map[*node]bool)
-	visited[start] = true
-
-	queue := make(chan nodeLevel, 100) // 100 is arbitrary, should suffice for our grid size
+	queue := make(chan *node, 100) // 100 is arbitrary, should suffice for our grid size
 	defer close(queue)
-	queue <- nodeLevel{node: start, depth: 0}
+	queue <- start
 
 	for n := range queue {
-		if n.node == end {
-			return n.depth
+		if n == end {
+			return visited[n]
 		}
 
-		for _, neighbour := range n.node.neighbours {
+		for _, neighbour := range n.neighbours {
 			if _, ok := visited[neighbour]; !ok {
-				visited[neighbour] = true
-				queue <- nodeLevel{node: neighbour, depth: n.depth + 1}
+				visited[neighbour] = visited[n] + 1
+				queue <- neighbour
 			}
 		}
 	}

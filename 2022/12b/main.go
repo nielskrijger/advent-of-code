@@ -13,33 +13,28 @@ type node struct {
 }
 
 func main() {
-	end := loadData("2022/12b/input.txt")
+	end := loadData("2022/12b/sample.txt")
 	fmt.Printf("Answer: %d", bfs(end, 'a')) // Start at the end and work backwards so it does one traversal
 }
 
 func bfs(start *node, findSymbol rune) int {
-	type nodeLevel struct {
-		node  *node
-		depth int
-	}
+	visited := make(map[*node]int)
+	visited[start] = 0
 
-	visited := make(map[*node]bool)
-	visited[start] = true
-
-	queue := make(chan nodeLevel, 100) // 100 is arbitrary, should suffice for our grid size
+	queue := make(chan *node, 100) // 100 is arbitrary, should suffice for our grid size
 	defer close(queue)
-	queue <- nodeLevel{node: start, depth: 0}
+	queue <- start
 
 	for len(queue) > 0 {
 		n := <-queue
-		if n.node.symbol == findSymbol {
-			return n.depth
+		if n.symbol == findSymbol {
+			return visited[n]
 		}
 
-		for _, neighbour := range n.node.neighbours {
+		for _, neighbour := range n.neighbours {
 			if _, ok := visited[neighbour]; !ok {
-				visited[neighbour] = true
-				queue <- nodeLevel{node: neighbour, depth: n.depth + 1}
+				visited[neighbour] = visited[n] + 1
+				queue <- neighbour
 			}
 		}
 	}
