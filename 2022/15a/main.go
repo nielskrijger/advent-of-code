@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	sensors := loadSensors("2022/15a/input.txt")
+	sensors := loadSensors("2022/15a/sample.txt")
 
 	hits := make(map[image.Point]int, 0)
 	for x := -1_000_000; x < 6_000_000; x++ {

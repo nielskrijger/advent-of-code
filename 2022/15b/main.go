@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	pos := findBeacon(loadSensors("2022/15b/input.txt"))
+	pos := findBeacon(loadSensors("2022/15b/sample.txt"))
 	fmt.Printf("Answer: %d", pos.X*4_000_000+pos.Y)
 }
 
