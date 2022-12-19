@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	network := loadData("2022/16b/input.txt")
+	network := loadData("2022/16b/sample.txt")
 
 	candidates := network.candidates()
 	max := 0
