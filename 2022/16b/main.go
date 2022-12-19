@@ -35,7 +35,7 @@ func main() {
 			}
 		}
 	}
-	fmt.Printf("Answer2: %d", max)
+	fmt.Printf("Answer: %d", max)
 }
 
 func dfs(valve *Valve, candidates []*Valve, t int) []map[string]int {
