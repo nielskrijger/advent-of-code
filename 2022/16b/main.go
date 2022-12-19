@@ -21,7 +21,7 @@ func main() {
 			}
 		}
 
-		// Takes a few minutes, should be optimized
+		// Takes a few minutes, should be optimized but it'd cost me more than those few minutes saved =|
 		for _, elephant := range dfs(network.find("AA"), elephantCandidates, 26) {
 			total := 0
 			for _, v := range human {
