@@ -79,9 +79,10 @@ func dfs(time int, blueprint Blueprint, wallet Resources, robots Robots) int {
 			return wallet[Geode]
 		}
 
-		if ids := canBuyRobots(blueprint, wallet, robots); len(ids) > 0 {
-			wallet = wallet.Add(robots) // Resource are increased after deciding to build anything
+		ids := canBuyRobots(blueprint, wallet, robots)
+		wallet = wallet.Add(robots) // Resource are increased after deciding to build anything
 
+		if len(ids) > 0 {
 			if ids[0] == Geode { // When it's a Geode robot always do that
 				return dfs(time, blueprint, wallet.Sub(blueprint[Geode]), robots.Add(Geode))
 			}
@@ -102,8 +103,6 @@ func dfs(time int, blueprint Blueprint, wallet Resources, robots Robots) int {
 			}
 
 			return max
-		} else {
-			wallet = wallet.Add(robots)
 		}
 	}
 }
