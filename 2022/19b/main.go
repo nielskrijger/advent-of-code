@@ -15,7 +15,7 @@ const (
 	Geode
 )
 
-type Resources [4]int // for semantic purposes, same type as robots
+type Resources [4]int // ore, clay, obsidian, geode
 
 func (r Resources) Sub(sub Resources) Resources {
 	for i, v := range sub {
@@ -40,7 +40,7 @@ func (r Resources) Add(robots Robots) Resources {
 	return r
 }
 
-type Robots [4]int // ore, clay, obsidian, geode
+type Robots [4]int // for semantic purposes, same type as robots
 
 func (r Robots) Add(resIndex ResourceIndex) Robots {
 	arr := r
@@ -48,7 +48,7 @@ func (r Robots) Add(resIndex ResourceIndex) Robots {
 	return arr
 }
 
-type Blueprint [4]Resources // ore, clay, obsidian, geode
+type Blueprint [4]Resources // ore robot cost, clay robot cost, obsidian robot cost, geode robot cost
 
 func (b Blueprint) MaxCost(resource ResourceIndex) int {
 	var max int
