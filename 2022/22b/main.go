@@ -34,14 +34,11 @@ var edges = Edges{
 func main() {
 	m, steps := loadData("2022/22b/sample.txt")
 	facing := 0
-	current := image.Pt(9, 1) // (51,1) for input, (9,1) for sample
+	current := image.Pt(6, 1) // (51,1) for my input, (9,1) for sample
 	for _, step := range steps {
 		current, facing = m.findFinishingPoint(current, step[0], facing)
 		if step[1] == 'L' {
-			facing = facing - 1
-			if facing < 0 {
-				facing = 3
-			}
+			facing = (facing + 3) % 4
 		} else if step[1] == 'R' {
 			facing = (facing + 1) % 4
 		}

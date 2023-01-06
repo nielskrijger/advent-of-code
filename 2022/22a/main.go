@@ -16,10 +16,7 @@ func main() {
 	for _, step := range steps {
 		current = m.findFinishingPoint(current, step[0], facing)
 		if step[1] == 'L' {
-			facing = facing - 1
-			if facing < 0 {
-				facing = 3
-			}
+			facing = (facing + 3) % 4
 		} else if step[1] == 'R' {
 			facing = (facing + 1) % 4
 		}
