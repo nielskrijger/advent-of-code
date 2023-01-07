@@ -105,8 +105,7 @@ func Max(a, b int) int {
 func loadData(filename string) Map {
 	m := make(map[image.Point]bool)
 	data, _ := os.ReadFile(filename)
-	groups := strings.Split(string(data), "\n\n")
-	for r, line := range strings.Split(groups[0], "\n") {
+	for r, line := range strings.Split(string(data), "\n") {
 		for c := 0; c < len(line); c++ {
 			if line[c] == '#' {
 				m[image.Pt(c, r)] = true
