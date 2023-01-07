@@ -16,11 +16,15 @@ var directions = [][3]image.Point{
 }
 
 func main() {
-	m := loadData("2022/23a/sample.txt")
-	for r := 0; r < 10; r++ {
-		m = updateSpots(m, chooseSpots(m, r))
+	m := loadData("2022/23b/sample.txt")
+	for r := 0; ; r++ {
+		spots := chooseSpots(m, r)
+		if len(spots) == 0 {
+			fmt.Printf("Answer: %d", r+1)
+			break
+		}
+		m = updateSpots(m, spots)
 	}
-	fmt.Printf("Answer: %d", m.FreeSpaces())
 }
 
 func chooseSpots(m Map, round int) map[image.Point][]image.Point {
@@ -73,19 +77,6 @@ func (m Map) SmallestRectangle() (image.Point, image.Point) {
 		min = image.Pt(Min(min.X, k.X), Min(min.Y, k.Y))
 	}
 	return min, max
-}
-
-func (m Map) FreeSpaces() int {
-	min, max := m.SmallestRectangle()
-	free := 0
-	for y := min.Y; y <= max.Y; y++ {
-		for x := min.X; x <= max.X; x++ {
-			if _, ok := m[image.Pt(x, y)]; !ok {
-				free++
-			}
-		}
-	}
-	return free
 }
 
 func Min(a, b int) int {
