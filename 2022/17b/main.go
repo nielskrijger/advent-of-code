@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"image"
+	"math"
 	"os"
 )
+
+const MaxRounds = 1_000_000_000_000
 
 var rocks = [][]image.Point{
 	{{0, 0}, {1, 0}, {2, 0}, {3, 0}},         // horizontal line
@@ -15,126 +18,78 @@ var rocks = [][]image.Point{
 }
 
 func main() {
-	jets, _ := os.ReadFile("2022/17b/sample.txt")
-
-	//cycleHeights := make([]int, 0)
-	heights := make([]int, 1)
+	jets, _ := os.ReadFile("2022/17b/input.txt")
 
 	grid := &Grid{occupied: map[image.Point]bool{}}
-	moved, height, prevHeight, j := false, 0, 0, 0
+	moved, height, j, totalCycleHeight := false, 0, 0, 0
+	states := make([]State, 0)
+	lastRound := MaxRounds
 
-	for i := 0; i < 2000; i++ {
+	for i := 0; i < lastRound; i++ {
 		rock := rocks[i%len(rocks)]
 		rock, _ = grid.moveRock(rock, image.Pt(2, height+3)) // start position
-		grid.print(rock)
 
 		for {
-			c := findCycle(heights, 10)
-			if c > -1 {
-				fmt.Printf("Cycle found at %d\n", c)
-				totalCycles := 2000 / i
-				fmt.Printf("%d\n", (totalCycles-1)*height)
-				return
-			}
-			//fmt.Printf("test: %v %v - %v %v\n", i%len(rocks), i%len(rocks) == 0, j%uint64(len(jets)), j%uint64(len(jets)) == 0)
-			//if i%len(rocks) == 0 && j%uint64(len(jets)) == uint64(0) {
-			//	println("-----------------")
-			//	cycles++
-			//	if len(cycleHeights) > 0 {
-			//		cycleHeights = append(cycleHeights, height-cycleHeights[len(cycleHeights)-1])
-			//		fmt.Printf("cycleHeights = %+v\n", cycleHeights)
-			//		return
-			//	} else {
-			//		println(height)
-			//		cycleHeights = append(cycleHeights, height)
-			//	}
-			//
-			//	//
-			//	//println("CYCLE")
-			//	//totalCycles := 1000000000000 / i
-			//	//fmt.Printf("height = %+v\n", height)
-			//	//fmt.Printf("totalCycles = %+v\n", totalCycles)
-			//	//height = (totalCycles - 1) * height
-			//	//i = 1000000000000 - 1000000000000%i
-			//	//fmt.Printf("i = %+v\n", i)
-			//	//for x := 0; x < 7; x++ {
-			//	//	grid.occupied[image.Pt(x, height)] = true // create new floor
-			//	//}
-			//	//return
-			//	continue out // Do the last remainder of the last cycle
-			//}
 			jet := jets[j%len(jets)]
 			j++
-			grid.print(rock)
 			rock, _ = grid.moveRock(rock, image.Pt(int(jet)-61, 0))
-			grid.print(rock)
-			rock, moved = grid.moveRock(rock, image.Pt(0, -1))
-
-			grid.print(rock)
-			if !moved {
-				prevHeight = height
+			if rock, moved = grid.moveRock(rock, image.Pt(0, -1)); !moved { // rock has settled
 				if maxY(rock)+1 > height {
 					height = maxY(rock) + 1
 				}
-				heights = append(heights, height-prevHeight)
 				for _, p := range rock {
 					grid.occupied[p] = true
+				}
+				if totalCycleHeight > 0 {
+					break
+				}
+
+				states = append(states, NewState(maxY(rock), grid.occupied, height))
+				if cycleOffset := findCycle(states, 10); cycleOffset > -1 {
+					cycleHeight := states[len(states)-1].height - states[len(states)-cycleOffset-1].height
+					remainingRounds := MaxRounds - i
+					totalCycleHeight = remainingRounds / cycleOffset * cycleHeight
+					lastRound = i + remainingRounds%cycleOffset
 				}
 				break
 			}
 		}
 	}
-
-	fmt.Printf("Answer: %d", height)
+	fmt.Printf("Answer: %d", height+totalCycleHeight)
 }
 
-func findCycle(heights []int, nr int) int {
-	if len(heights) < 100*nr {
-		return -1 // not enough elements to find cycle
+type State struct {
+	hash   int
+	height int
+}
+
+func NewState(y int, occupiedPts map[image.Point]bool, height int) State {
+	hash := 0
+	for x := 0; x < 7; x++ {
+		if _, ok := occupiedPts[image.Pt(x, y)]; ok {
+			hash += int(math.Pow(2, float64(x+1)))
+		}
 	}
-	for i := len(heights) - nr; i > nr; i-- {
-		//fmt.Printf("%v\n", heights[len(heights)-nr:])
-		if isCycle(heights[len(heights)-nr:], heights[i-nr:i]) {
-			fmt.Printf("Cycle found at %v\n", i)
-			//if isCycle(heights[len(heights)-nr:], heights[len(heights)-i*2:len(heights)-i]) {
-			//	println("---------------")
-			//	return len(heights) - i
-			//}
+	return State{hash, height}
+}
+
+func findCycle(states []State, repeat int) int {
+	for i := repeat; i < len(states)-repeat; i++ {
+		if isCycle(states[len(states)-repeat:], states[len(states)-i-repeat:len(states)-i]) {
+			return i
 		}
 	}
 	return -1
 }
 
-func isCycle(match []int, heights []int) bool {
-	for i, m := range match {
-		if heights[i] != m {
+func isCycle(first []State, second []State) bool {
+	for i, m := range first {
+		if second[i].hash != m.hash {
 			return false
 		}
 	}
 	return true
 }
-
-type Grid struct {
-	occupied  map[image.Point]bool
-	lastMoves [][]image.Point
-}
-
-//func (g *Grid) findCycle(length int) bool {
-//out:
-//	for j := len(g.lastMoves) - length; j > len(g.lastMoves)-100*length && j > 0; j-- {
-//		//fmt.Printf("j = %+v\n", j)
-//		for i, l := range g.lastMoves[len(g.lastMoves)-length:] {
-//			for pi, p := range g.lastMoves[i] {
-//				if g.lastMoves[j][pi].X != l.X {
-//					continue out
-//				}
-//			}
-//		}
-//		fmt.Printf("ALL THE SAME AT %d", j)
-//		return true
-//	}
-//	return false
-//}
 
 func maxY(pts []image.Point) (maxY int) {
 	for _, p := range pts {
@@ -145,40 +100,18 @@ func maxY(pts []image.Point) (maxY int) {
 	return maxY
 }
 
+type Grid struct {
+	occupied map[image.Point]bool
+}
+
 func (g *Grid) moveRock(rock []image.Point, delta image.Point) ([]image.Point, bool) {
 	newPos := make([]image.Point, 0, len(rock)-1)
 	for _, point := range rock {
 		p := point.Add(delta)
 		if _, occupied := g.occupied[p]; occupied || p.X < 0 || p.X > 6 || p.Y < 0 {
-			g.lastMoves = append(g.lastMoves, rock)
 			return rock, false // can't move
 		}
 		newPos = append(newPos, p)
 	}
 	return newPos, true
-}
-
-func (g *Grid) print(rock []image.Point) {
-	//println("")
-	//for y := 20; y >= 0; y-- {
-	//	for x := 0; x < 7; x++ {
-	//		if contains(rock, image.Pt(x, y)) {
-	//			fmt.Printf("@")
-	//		} else if g.occupied[image.Pt(x, y)] {
-	//			fmt.Print("#")
-	//		} else {
-	//			fmt.Print(".")
-	//		}
-	//	}
-	//	fmt.Print("\n")
-	//}
-}
-
-func contains(pts []image.Point, p image.Point) bool {
-	for _, point := range pts {
-		if p == point {
-			return true
-		}
-	}
-	return false
 }
