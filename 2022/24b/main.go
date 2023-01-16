@@ -9,9 +9,10 @@ import (
 )
 
 func main() {
-	maps := generateAllMaps(loadData("2022/24a/sample.txt"))
+	maps := generateAllMaps(loadData("2022/24b/sample.txt"))
+	start := image.Pt(1, 0)
 	end := image.Pt(maps[0].max.X-1, maps[0].max.Y)
-	fmt.Printf("Answer: %+v", findRoute(maps, image.Pt(1, 0), end))
+	fmt.Printf("Answer: %+v", findRoute(maps, findRoute(maps, findRoute(maps, 0, start, end), end, start), start, end))
 }
 
 var deltas = map[uint8]image.Point{
@@ -23,9 +24,9 @@ type State struct {
 	point image.Point
 }
 
-func findRoute(maps []*Map, start image.Point, end image.Point) int {
+func findRoute(maps []*Map, t int, start image.Point, end image.Point) int {
 	seen := make(map[State]bool)
-	queue := []State{{0, start}}
+	queue := []State{{t, start}}
 	seen[State{0, start}] = true
 
 	for len(queue) > 0 {
